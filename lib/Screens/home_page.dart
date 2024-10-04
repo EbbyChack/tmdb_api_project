@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tmdb_api_project/Misc/background.dart';
 import 'package:tmdb_api_project/Screens/movie_page.dart';
 import 'package:tmdb_api_project/models/genre_model.dart';
@@ -42,6 +43,17 @@ class _HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
+              margin: const EdgeInsets.only(bottom: 20, left: 40, right: 40),
+              child: Text(
+                "Discover your next movie adventure with just a tap!",
+                style: GoogleFonts.roboto(
+                  fontSize: 38,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               margin: const EdgeInsets.symmetric(horizontal: 40),
               decoration: BoxDecoration(
@@ -75,7 +87,7 @@ class _HomeState extends State<Home> {
                       items: [
                         DropdownMenuItem(
                           value: allGenres,
-                          child: Text('All'),
+                          child: const Text('All'),
                         ),
                         ...snapshot.data!.map((Genre genre) {
                           return DropdownMenuItem<String>(
@@ -108,7 +120,7 @@ class _HomeState extends State<Home> {
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Color(0xFF372554),
+                  backgroundColor: const Color(0xFF372554),
                   elevation: 30,
                   shadowColor: Colors.black,
                   padding:

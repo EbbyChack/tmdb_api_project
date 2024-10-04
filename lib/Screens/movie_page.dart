@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:tmdb_api_project/Misc/movie_rating_badge.dart';
 
 import 'package:flutter/material.dart';
@@ -57,7 +56,7 @@ class _MoviePageState extends State<MoviePage> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: Color(0xFF372554),
+            backgroundColor: const Color(0xFF372554),
             elevation: 30,
             shadowColor: Colors.black,
             padding: const EdgeInsets.all(20),

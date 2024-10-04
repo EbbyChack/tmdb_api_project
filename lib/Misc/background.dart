@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
-import 'package:flutter/services.dart';
 
 class Background extends StatefulWidget {
-  Background({super.key, required this.child});
+  const Background({super.key, required this.child});
 
   final Widget child;
   final String image = 'lib/assets/texture.jpg';
@@ -42,7 +41,7 @@ class _BackgroundState extends State<Background>
         children: [
           CustomPaint(
             painter: BackgroundPainter(),
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
             ),
@@ -64,7 +63,8 @@ class _BackgroundState extends State<Background>
           Positioned.fill(
             child: Image(
               image: AssetImage(widget.image),
-              opacity: AlwaysStoppedAnimation(0.2),
+              opacity: const AlwaysStoppedAnimation(0.09),
+              
               fit: BoxFit.cover,
             ),
           ),
@@ -106,18 +106,18 @@ class BackgroundPainter extends CustomPainter {
 
     Path mainBackground = Path();
     mainBackground.addRect(Rect.fromLTRB(0, 0, width, height));
-    paint.color = Color(0xFF372554);
+    paint.color = const Color(0xFF372554);
     canvas.drawPath(mainBackground, paint);
 
     Path ovalPath = Path();
-    ovalPath.addOval(Rect.fromCircle(center: Offset(100, 500), radius: 300));
-    paint.color = Color.fromARGB(255, 92, 92, 154);
+    ovalPath.addOval(Rect.fromCircle(center: const Offset(100, 500), radius: 300));
+    paint.color = const Color.fromARGB(255, 92, 92, 154);
     canvas.drawPath(ovalPath, paint);
 
     Path topRightOvalPath = Path();
     topRightOvalPath.addOval(
         Rect.fromCircle(center: Offset(width - 100, 100), radius: 150));
-    paint.color = Color.fromARGB(255, 212, 178, 216);
+    paint.color = const Color.fromARGB(255, 212, 178, 216);
     canvas.drawPath(topRightOvalPath, paint);
   }
 
