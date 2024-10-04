@@ -48,6 +48,25 @@ class _MoviePageState extends State<MoviePage> {
     return genreNames;
   }
 
+  String dateFormater(String date) {
+    List<String> months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    List<String> dateList = date.split('-');
+    return '${dateList[2]} ${months[int.parse(dateList[1]) - 1]} ${dateList[0]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +78,7 @@ class _MoviePageState extends State<MoviePage> {
             backgroundColor: const Color(0xFF372554),
             elevation: 30,
             shadowColor: Colors.black,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(25),
             shape: const CircleBorder(),
           ),
           onPressed: () {
@@ -67,7 +86,7 @@ class _MoviePageState extends State<MoviePage> {
               _randomMovie = widget.genreId.then((genreId) => discoverMovies(genreId));
             });
           },
-          child: const Icon(Icons.refresh),
+          child: const Icon(Icons.refresh, size: 40),
         ),
       ),
       body: Background(
@@ -199,7 +218,7 @@ class _MoviePageState extends State<MoviePage> {
                                       ),
                                       children: <TextSpan>[
                                         TextSpan(
-                                          text: snapshot.data!.releaseDate,
+                                          text: dateFormater(snapshot.data!.releaseDate),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w100,
                                           ),
