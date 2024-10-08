@@ -53,7 +53,7 @@ class _MovieRatingBadgeState extends State<MovieRatingBadge> {
             SvgPicture.string(
               '''
               <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="45" stroke="${getRatingColor(widget.rating)}" stroke-width="10" fill="none" stroke-dasharray="${(widget.rating * 28.3).toStringAsFixed(1)}, 283" />
+                <circle cx="50" cy="50" r="45" stroke="${getRatingColor(widget.rating)}" stroke-width="10" fill="none" stroke-dasharray="${(widget.rating * 28.3).toStringAsFixed(1)}, 283"  stroke-linecap="round" />
               </svg>
               ''',
               width: MediaQuery.of(context).size.width * 0.11,
