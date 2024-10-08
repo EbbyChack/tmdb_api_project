@@ -1,9 +1,14 @@
+import 'dart:convert';
+
+import 'package:country_codes/country_codes.dart';
 import 'package:tmdb_api_project/Misc/movie_rating_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:tmdb_api_project/Misc/background.dart';
+import 'package:tmdb_api_project/Misc/network.dart';
 import 'package:tmdb_api_project/models/cast_model.dart';
 import 'package:tmdb_api_project/models/genre_model.dart';
 import 'package:tmdb_api_project/models/movie_model.dart';
+import 'package:tmdb_api_project/models/watch_providers_country_flatrate_model.dart';
 import 'package:tmdb_api_project/services/genre_list_service.dart';
 import 'package:tmdb_api_project/services/discover_movie_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,13 +32,29 @@ class _MoviePageState extends State<MoviePage> {
   late Future<List<Cast>> _credits;
   late Future<List<String>> director;
   late Future<String> trailer;
+  late Future<List<WatchProviders>> watchProviders;
+  late Future<String> countryCode;
 
   @override
   void initState() {
     super.initState();
+
+    Future<String> getCountry() async {
+      Network n = Network("http://ip-api.com/json");
+      var data = jsonDecode(await n.getData());
+      var country = data['countryCode'];
+      return country;
+    }
+
+    countryCode = getCountry();
+
+    //fetching genres
     genres = fetchGenres();
+    //fetching random movie after fetching genres
     _randomMovie = widget.genreId.then((genreId) => discoverMovies(genreId));
+    //fetching credits for the random movie
     _credits = _randomMovie.then((movie) => getMovieCredits(movie!.id));
+    //fetching director name
     director = _credits.then((credits) {
       List<String> directorNames = [];
       for (var credit in credits) {
@@ -46,8 +67,11 @@ class _MoviePageState extends State<MoviePage> {
       }
       return directorNames;
     });
-
+    //fetching trailer for the random movie
     trailer = _randomMovie.then((movie) => getMovieTrailer(movie!.id));
+    //fetching watch providers for the random movie
+    watchProviders = _randomMovie.then((movie) =>
+        countryCode.then((code) => getWatchProviders(movie!.id, code)));
   }
 
   //to get genre names
@@ -90,9 +114,7 @@ class _MoviePageState extends State<MoviePage> {
 
     int monthIndex = int.parse(dateList[1]) - 1;
 
-    if (monthIndex < 0 || monthIndex >= months.length) {
-      print('Month index error, check 2');
-    }
+   
 
     return '${dateList[2]} ${months[monthIndex]} ${dateList[0]}';
   }
@@ -131,6 +153,9 @@ class _MoviePageState extends State<MoviePage> {
               });
               trailer =
                   _randomMovie.then((movie) => getMovieTrailer(movie!.id));
+
+              watchProviders = _randomMovie.then((movie) => countryCode
+                  .then((code) => getWatchProviders(movie!.id, code)));
             });
           },
           child: const Icon(Icons.refresh, size: 40),
@@ -147,7 +172,8 @@ class _MoviePageState extends State<MoviePage> {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: FutureBuilder(
-                    future: Future.wait([_randomMovie, director, trailer]),
+                    future: Future.wait(
+                        [_randomMovie, director, trailer, watchProviders]),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Container(
@@ -324,6 +350,55 @@ class _MoviePageState extends State<MoviePage> {
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(height: 10),
+                                  if ((snapshot.data![3]
+                                          as List<WatchProviders>)
+                                      .isNotEmpty)
+                                    Container(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Availabe on:',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Wrap(
+                                            children: [
+                                              for (var provider
+                                                  in (snapshot.data![3]
+                                                      as List<WatchProviders>))
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      right: 5),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    child: Image.network(
+                                                      'https://image.tmdb.org/t/p/original${provider.logoPath}',
+                                                      width: 50,
+                                                      height: 50,
+                                                      errorBuilder: (context,
+                                                          error, stackTrace) {
+                                                        return const Icon(
+                                                            Icons
+                                                                .image_not_supported,
+                                                            color: Colors.grey,
+                                                            size: 50);
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   const SizedBox(height: 10),
                                   if (snapshot.data![2] != '')
                                     Center(

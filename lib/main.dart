@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:tmdb_api_project/Screens/home_page.dart';
 
 
-void main() {
+void main()  {
+
   runApp(const MyApp());
 }
 
