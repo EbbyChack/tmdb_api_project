@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^6.2.1
   url_launcher: ^6.3.0
   country_codes: ^3.1.0+2
+  flutter_dotenv: ^5.1.0
  
 
 dev_dependencies:
@@ -62,5 +63,6 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/
+    - assets/.env
     
   

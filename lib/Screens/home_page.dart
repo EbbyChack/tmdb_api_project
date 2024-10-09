@@ -23,6 +23,7 @@ class _HomeState extends State<Home> {
     genres = fetchGenres();
   }
 
+  //getting the genre id from the genre name
   Future<String> getGenreId(String? genreName) async {
     String genreId = '';
     List<Genre> genreList = await genres;

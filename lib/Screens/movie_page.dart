@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:country_codes/country_codes.dart';
+
 import 'package:tmdb_api_project/Misc/movie_rating_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:tmdb_api_project/Misc/background.dart';
@@ -24,9 +24,11 @@ class MoviePage extends StatefulWidget {
   State<MoviePage> createState() => _MoviePageState();
 }
 
+//base url for images
 String baseImgUrl = 'https://image.tmdb.org/t/p/original';
 
 class _MoviePageState extends State<MoviePage> {
+  //variables to store the future values
   late Future<List<Genre>> genres;
   late Future<Movie?> _randomMovie;
   late Future<List<Cast>> _credits;
@@ -35,10 +37,12 @@ class _MoviePageState extends State<MoviePage> {
   late Future<List<WatchProviders>> watchProviders;
   late Future<String> countryCode;
 
+  //initializing the state
   @override
   void initState() {
     super.initState();
 
+    //function to get the country code of the device without explicitly asking the user, found on stackoverflow
     Future<String> getCountry() async {
       Network n = Network("http://ip-api.com/json");
       var data = jsonDecode(await n.getData());
@@ -46,15 +50,19 @@ class _MoviePageState extends State<MoviePage> {
       return country;
     }
 
+    //fetching the country code
     countryCode = getCountry();
 
-    //fetching genres
+    //fetching genres to show the genre names in the card
     genres = fetchGenres();
-    //fetching random movie after fetching genres
+
+    //fetching random movie after i get the genre id from the previous screen
     _randomMovie = widget.genreId.then((genreId) => discoverMovies(genreId));
-    //fetching credits for the random movie
+
+    //fetching credits for the movie after i get the movie object
     _credits = _randomMovie.then((movie) => getMovieCredits(movie!.id));
-    //fetching director name
+
+    //looking for director names after i get the credits
     director = _credits.then((credits) {
       List<String> directorNames = [];
       for (var credit in credits) {
@@ -67,19 +75,24 @@ class _MoviePageState extends State<MoviePage> {
       }
       return directorNames;
     });
-    //fetching trailer for the random movie
+
+    //fetching trailer for the movie after i get the movie object
     trailer = _randomMovie.then((movie) => getMovieTrailer(movie!.id));
-    //fetching watch providers for the random movie
+
+    //fetching watch providers for the movie after i get the movie object and the country code
     watchProviders = _randomMovie.then((movie) =>
         countryCode.then((code) => getWatchProviders(movie!.id, code)));
   }
 
-  //to get genre names
+  //to get genre names by passing in a list of genre ids, it returns a list of genre names
   Future<List<String>> getGenreNames(List<int> genreIds) async {
+    //it waits for the genres to be fetched
     List<Genre> genreList = await genres;
     List<String> genreNames = [];
 
+    //iterating through the genre ids i passed as an argument 
     for (int id in genreIds) {
+      //iterating through the genre list with all the genres i fetched
       for (Genre genre in genreList) {
         if (genre.id == id) {
           genreNames.add(genre.name);
@@ -92,6 +105,7 @@ class _MoviePageState extends State<MoviePage> {
 
   //to format date
   String dateFormater(String date) {
+    //if the date is empty it returns 'Date not found'
     if (date == '') {
       return 'Date not found';
     }
@@ -110,12 +124,12 @@ class _MoviePageState extends State<MoviePage> {
       'Dec'
     ];
 
+    //splitting the date string into a list of strings
     List<String> dateList = date.split('-');
 
+    //getting the month index and subtracting 1 to get the correct month
     int monthIndex = int.parse(dateList[1]) - 1;
-
-   
-
+    
     return '${dateList[2]} ${months[monthIndex]} ${dateList[0]}';
   }
 
@@ -134,6 +148,7 @@ class _MoviePageState extends State<MoviePage> {
             shape: const CircleBorder(),
           ),
           onPressed: () {
+            //it does the same thing as the init state, but it refreshes the page
             setState(() {
               _randomMovie =
                   widget.genreId.then((genreId) => discoverMovies(genreId));
