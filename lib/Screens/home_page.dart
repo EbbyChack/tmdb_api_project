@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tmdb_api_project/Misc/background.dart';
@@ -45,14 +46,18 @@ class _HomeState extends State<Home> {
           children: [
             Container(
               margin: const EdgeInsets.only(bottom: 20, left: 40, right: 40),
-              child: Text(
+                child: Text(
                 "Discover your next movie adventure with just a tap!",
                 style: GoogleFonts.roboto(
                   fontSize: 38,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
+                //*this is a comment
+                //! this is a comment
+                //? this is a comment
+                // this is a comment
+                ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
