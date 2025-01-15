@@ -1,4 +1,3 @@
-# tmdb_api_project
 
 App made in Flutter with TMDB API
 
